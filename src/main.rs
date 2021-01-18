@@ -4,12 +4,9 @@
 #![deny(unsafe_code)]
 #![deny(unstable_features)]
 
-// pick a panicking behavior
-use panic_halt as _; // you can put a breakpoint on `rust_begin_unwind` to catch panics
-                     // use panic_abort as _; // requires nightly
-                     // use panic_itm as _; // logs messages over ITM; requires ITM support
-                     // use panic_semihosting as _; // logs messages to the host stderr; requires a debugger
+use panic_itm as _;
 
+use cortex_m::iprintln;
 use cortex_m_rt::entry;
 use stm32f4xx_hal as hal;
 
@@ -31,10 +28,12 @@ use epd_waveshare::{
 
 #[entry]
 fn main() -> ! {
-    if let (Some(dp), Some(cp)) = (
+    if let (Some(dp), Some(mut cp)) = (
         stm32::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
     ) {
+        let stim = &mut cp.ITM.stim[0];
+
         // Set up the LEDs
         let gpioc = dp.GPIOC.split();
         let gpioa = dp.GPIOA.split();
@@ -52,7 +51,6 @@ fn main() -> ! {
         let dc = gpioa.pa3.into_push_pull_output();   // -> D/C
         let cs = gpioa.pa4.into_push_pull_output();   // -> CS
         let rst = gpioa.pa2.into_push_pull_output();  // -> Reset
-        // let busy = gpioa.pa1.into_push_pull_output(); // -> Busy
         let busy = gpioa.pa1.into_pull_down_input(); // -> Busy
 
         let mut spi = Spi::spi1(
@@ -72,7 +70,7 @@ fn main() -> ! {
             let mut display = Display1in54b::default();
 
             // Draw some text
-            Text::new("Hello Rust!", Point::new(1, 1))
+            Text::new("Hello from Rust!", Point::new(1, 1))
                 .into_styled(text_style!(
                     font = Font12x16,
                     text_color = Black,
@@ -85,6 +83,8 @@ fn main() -> ! {
             epd.update_and_display_frame(&mut spi, &display.buffer())
                 .unwrap();
             epd.sleep(&mut spi).unwrap();
+
+            iprintln!(stim, "Message displayed!");
         }
 
         loop {

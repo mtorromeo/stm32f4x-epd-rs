@@ -1,2 +1,5 @@
 /target
 /.vscode/.cortex-debug.*
+itm.txt
+.*
+!.gitignore

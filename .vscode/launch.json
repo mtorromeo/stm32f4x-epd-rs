@@ -11,11 +11,22 @@
             "cwd": "${workspaceRoot}",
             "executable": "./target/thumbv7em-none-eabihf/debug/stm32f4x-epd-rs",
             "name": "Debug (OpenOCD)",
-            "device": "STM32F4",
+            "device": "STM32F401CCU6",
             "configFiles": [
                 "${workspaceRoot}/openocd.cfg"
             ],
-            "runToMain": true
+            "runToMain": true,
+            "preLaunchTask": "build",
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 84000000,
+                "swoFrequency": 2000000,
+                "source": "probe",
+                "decoders": [
+                    { "type": "console", "label": "ITM", "port": 0 }
+                ]
+            },
+            "svdFile": "${workspaceRoot}/STM32F401.svd"
         }
     ]
 }

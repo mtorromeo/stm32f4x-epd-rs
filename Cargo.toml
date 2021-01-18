@@ -11,6 +11,7 @@ cortex-m-rt = "0.6.13"
 epd-waveshare = "0.4.0"
 embedded-graphics = "0.6.2"
 embedded-hal = "0.2.4"
+panic-itm = "0.4.2"
 
 [dependencies.stm32f4xx-hal]
 version = "0.8.3"
