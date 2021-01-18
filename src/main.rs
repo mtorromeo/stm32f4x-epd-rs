@@ -4,9 +4,9 @@
 #![deny(unsafe_code)]
 #![deny(unstable_features)]
 
-use panic_itm as _;
+mod setup;
+use setup::*;
 
-use cortex_m::iprintln;
 use cortex_m_rt::entry;
 use stm32f4xx_hal as hal;
 
@@ -28,16 +28,15 @@ use epd_waveshare::{
 
 #[entry]
 fn main() -> ! {
-    if let (Some(dp), Some(mut cp)) = (
+    if let (Some(dp), Some(cp)) = (
         stm32::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
     ) {
-        let stim = &mut cp.ITM.stim[0];
-
         // Set up the LEDs
         let gpioc = dp.GPIOC.split();
-        let gpioa = dp.GPIOA.split();
         let mut led = gpioc.pc13.into_push_pull_output();
+
+        let gpioa = dp.GPIOA.split();
 
         // Set up the system clock. We want to run at 48MHz for this one.
         let rcc = dp.RCC.constrain();
@@ -84,7 +83,7 @@ fn main() -> ! {
                 .unwrap();
             epd.sleep(&mut spi).unwrap();
 
-            iprintln!(stim, "Message displayed!");
+            defmt::info!("Message displayed!");
         }
 
         loop {
@@ -95,5 +94,5 @@ fn main() -> ! {
         }
     }
 
-    loop {}
+    exit()
 }
