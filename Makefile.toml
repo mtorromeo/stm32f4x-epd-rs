@@ -1,0 +1,26 @@
+[tasks.objcopy]
+command = "cargo"
+args= [
+    "objcopy",
+    "--release",
+    "--",
+    "-O", "binary",
+    "target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/release/${CARGO_MAKE_CRATE_NAME}.bin"
+]
+
+[tasks.dfu]
+command = "dfu-util"
+args = [
+    "-d", "0483:df11",
+    "-a", "0",
+    "-s", "0x08000000:leave",
+    "-D", "target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/release/${CARGO_MAKE_CRATE_NAME}.bin"
+]
+dependencies = ["objcopy"]
+
+[tasks.flash]
+command = "openocd"
+args = [
+    "-f", "openocd.cfg",
+    "-c", "program target/${CARGO_MAKE_CRATE_TARGET_TRIPLE}/release/${CARGO_MAKE_CRATE_NAME} reset"
+]

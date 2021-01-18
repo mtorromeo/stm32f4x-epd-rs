@@ -1,0 +1,22 @@
+[package]
+name = "stm32f4x-epd-rs"
+version = "0.1.0"
+authors = ["Massimiliano Torromeo <massimiliano.torromeo@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+cortex-m = "0.6.4"
+panic-halt = "0.2.0"
+cortex-m-rt = "0.6.13"
+epd-waveshare = "0.4.0"
+embedded-graphics = "0.6.2"
+embedded-hal = "0.2.4"
+
+[dependencies.stm32f4xx-hal]
+version = "0.8.3"
+features = ["stm32f401"]
+
+[profile.release]
+codegen-units = 1
+debug = true
+lto = true
