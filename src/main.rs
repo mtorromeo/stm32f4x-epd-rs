@@ -92,7 +92,7 @@ fn main() -> ! {
             defmt::error!("{:?}", e);
         }
     } else {
-        defmt::error!("Could not initialiaze peripherals");
+        defmt::error!("Could not initialize peripherals");
     }
     exit()
 }
