@@ -120,7 +120,7 @@ fn run(dp: stm32::Peripherals, cp: cortex_m::peripheral::Peripherals) -> Result<
             polarity: Polarity::IdleLow,
             phase: Phase::CaptureOnFirstTransition,
         },
-        MegaHertz(4).into(),
+        MegaHertz(20).into(),
         clocks,
     );
 
